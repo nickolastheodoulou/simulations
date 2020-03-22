@@ -10,36 +10,40 @@ from vpython import *
 #%%
 
 # Define parameters.
-beta = 0.05  # Rate of disease transmission. Includes washing your hands!
+beta = 0.35  # Rate of disease transmission. Includes washing your hands!
 gamma = 0.1  # Rate of loss of recovery. 0 --> Once in recovery, stay in recovery.
-xi = 0.01  # Rate at which individuals return to susceptible state due to loss of immunity
-
+xi = 0.005  # Rate at which individuals return to susceptible state due to loss of immunity
+sigma = 0.01  #rate of latent individuals becoming infectious
 
 def derivs(t, population):
     S = population[0]  # Fraction susceptible: Not yet infected and might become infected.
     I = population[1]  # Fraction infected: Ongoing disease.
     R = population[2]  # Fraction recovered: Gained immunity, isolated, or dead.
-    N = S + I + R
+    E = population[3]
+    N = S + I + R + E
 
     Sdot = -(beta * S * I/N) + (xi * R)
-    Idot = (beta * S * I/N) - (gamma * I)
+    Edot = (beta * S * I/N) - (sigma * E)
+    Idot = (sigma * E) - (gamma * I)
     Rdot = (gamma * I) - (xi * R)
 
-    return [Sdot, Idot, Rdot]
+    return [Sdot, Idot, Rdot, Edot]
 
 
 # Set initial conditions. These are fractions, not whole numbers.
-S = 85  # Fraction susceptible: Not yet infected.
-R = 14  # Fraction recovered: Gained immunity, isolated, or dead.
-I = 1  # Fraction infected: Ongoing disease.
+S = 2000  # number susceptible: Not yet infected.
+I = 40  # number infected: Ongoing disease.
+R = 0  # number recovered: Gained immunity, isolated, or dead.
+E = 4
 
 # Create graphs.
 s_plot = gcurve(color=color.blue, label="% susceptible")
 i_plot = gcurve(color=color.red, label="% infected")
-r_plot = gcurve(color=color.yellow, label="% recovered")
+r_plot = gcurve(color=color.green, label="% recovered")
+e_plot = gcurve(color=color.orange, label="% exposed")
 
 time = 0
-tmax = 500
+tmax = 1000
 dt = 0.1
 
 
@@ -57,7 +61,7 @@ def add(l1, l2):
     return out
 
 
-population = [S, I, R]
+population = [S, I, R, E]
 
 
 while time < tmax:
@@ -72,5 +76,6 @@ while time < tmax:
     s_plot.plot(time, population[0])
     i_plot.plot(time, population[1])
     r_plot.plot(time, population[2])
+    e_plot.plot(time, population[3])
 
     time += dt
