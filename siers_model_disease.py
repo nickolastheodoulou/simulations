@@ -7,13 +7,15 @@ from vpython import *
 # https://en.wikipedia.org/wiki/Semi-implicit_Euler_method
 # https://sci-hub.tw/10.1007/s10483-007-0914-x
 
-#%%
-
 # Define parameters.
-beta = 0.35  # Rate of disease transmission. Includes washing your hands!
-gamma = 0.1  # Rate of loss of recovery. 0 --> Once in recovery, stay in recovery.
-xi = 0.005  # Rate at which individuals return to susceptible state due to loss of immunity
-sigma = 0.01  #rate of latent individuals becoming infectious
+b = 0.000001  # birth rate
+mu = 0.0000005  # death rate
+beta = 0.8  # rate of trasmission
+alpha = 0.9  # the rate of disease infectivity
+gamma = 0.90  # the rate of cure of disease
+sigma = 0.01  # the rate of returning individuals vulnerable
+nu = 0  # the ratio of the number of individuals who received the vaccine
+q = 0  # giving treatment
 
 def derivs(t, population):
     S = population[0]  # Fraction susceptible: Not yet infected and might become infected.
@@ -22,19 +24,19 @@ def derivs(t, population):
     E = population[3]
     N = S + I + R + E
 
-    Sdot = -(beta * S * I/N) + (xi * R)
-    Edot = (beta * S * I/N) - (sigma * E)
-    Idot = (sigma * E) - (gamma * I)
-    Rdot = (gamma * I) - (xi * R)
+    Sdot = (b * N) + (sigma * R) - (beta * S * I/ N) - (nu * S) - (mu * S)
+    Edot = (beta * S * I/ N) - (alpha * E) - (mu * E)
+    Idot = (alpha * E) + (q * I) - (gamma * I) - (mu * I)
+    Rdot = (gamma * I) + (nu * S) - (sigma * R) - (mu * R)
 
     return [Sdot, Idot, Rdot, Edot]
 
 
 # Set initial conditions. These are fractions, not whole numbers.
-S = 2000  # number susceptible: Not yet infected.
-I = 40  # number infected: Ongoing disease.
-R = 0  # number recovered: Gained immunity, isolated, or dead.
-E = 4
+S = 50000000  # number susceptible: Not yet infected.
+I = 500000  # number infected: Ongoing disease.
+R = 1000  # number recovered: Gained immunity, isolated, or dead.
+E = 5000000  # number exposed
 
 # Create graphs.
 s_plot = gcurve(color=color.blue, label="% susceptible")
