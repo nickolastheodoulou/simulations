@@ -50,19 +50,19 @@ def main():
     parameters = {
         "birth_rate": 0.00,
         "death_rate": 0.00,
-        "rate_of_transmission": 0.96,
+        "rate_of_transmission": 0.00004,
         "rate_of_incubation": 1,
-        "rate_of_recovery": 0.90,
-        "rate_of_loss_of_immunity": 0.003,
+        "rate_of_recovery": 1/14,
+        "rate_of_loss_of_immunity": 0.00003,
         "rate_of_vaccination": 0,
         "rate_of_treatment": 0
 
     }
 
     pop_susceptible = 50000000  # number susceptible: Not yet infected.
-    pop_infectious = 500  # number infected: Ongoing disease.
+    pop_exposed = 500000  # number exposed
+    pop_infectious = 200  # number infected: Ongoing disease.
     pop_recovered = 100  # number recovered: Gained immunity, isolated, or dead.
-    pop_exposed = 5000000  # number exposed
     vector_population = [pop_susceptible, pop_exposed, pop_infectious, pop_recovered]
 
     # Create graphs.
